@@ -49,21 +49,29 @@ function resetCounter(){
 
 //timer
 let sec = 1;
+let min = 0;
 let timer;
 
 function timerStarts(){
     timer = setInterval(function(){
-    	
+
+    if (sec >= 0 && sec <= 60) {
+
     	if (sec.toString().length == 1){
-    		document.getElementById('timer').innerHTML='00:'+ '0' + Number(sec);
+    		document.getElementById('timer').innerHTML='0' + min + ':0' + Number(sec);
     	}
     	
-    	if (sec.toString().length !== 1){
-    		document.getElementById('timer').innerHTML='00:' + Number(sec) ;
+    	if (sec.toString().length == 2){
+    		document.getElementById('timer').innerHTML='0' + min + ':' + Number(sec) ;
+    	}
+
+       	if (sec%60 == 0) {
+       		min += 1;
+       		sec = 0;
     	}
         
         sec += 1;
-
+    }
         //stops when all cards are matched
         if ($(".card.match").length === 16) {
             clearInterval(timer);
@@ -72,8 +80,20 @@ function timerStarts(){
     }, 1000);
 }
 
-//calulate stars
+//calculate stars NOT WORKING
+function stars(count){
 
+	if (count <= 10) {
+		$('.score-panel .stars li')[2].css("display","none")
+
+	} else if (count <= 20) {
+		$('.score-panel .stars li')[1].css("display","none")
+		
+	} else {
+		$('.score-panel .stars li')[0].css("display","none")
+
+	}
+}
 
 
 
@@ -161,10 +181,7 @@ function initialiseClickActions() {
 
 
 				//calculate stars
-				/*
-				 * code
-				 * 
-				 * */
+				// stars(count);
 			}
 
 			//checks if there is 2nd card
