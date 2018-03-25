@@ -18,6 +18,20 @@ function generateCardTable(icons) {
 	return uiCards
 }
 
+//restart button
+const restart = document.getElementById('button');
+
+restart.addEventListener('click', function() {
+	//reset board game
+	generateCardTable(icons);
+	//reset timer
+
+	//reset star rating
+
+	//reset move counter
+});
+
+
 function initialiseGameBoard() {
 	const icons = ["fa-anchor","fa-anchor", "fa-paper-plane-o","fa-paper-plane-o", "fa-diamond","fa-diamond", "fa-cube","fa-cube", "fa-leaf","fa-leaf", "fa-bomb", "fa-bomb", "fa-bicycle", "fa-bicycle", "fa-bolt", "fa-bolt"]
 
@@ -130,10 +144,16 @@ function initialiseClickActions() {
 							currentCard.classList.add('match')
 						}
 
+						//add notmatch class				
+						if (!notCurrentCard.classList.contains('match') && !currentCard.classList.contains('match')){
+							notCurrentCard.classList.add('notmatch')
+							currentCard.classList.add('notmatch')
+						}
+
 						//close both open cards
 						setTimeout(function () {
-							notCurrentCard.classList.remove('open','show')
-							currentCard.classList.remove('open','show') 
+							notCurrentCard.classList.remove('notmatch','open','show')
+							currentCard.classList.remove('notmatch','open','show') 
 						}, 1000);
 					}
 
