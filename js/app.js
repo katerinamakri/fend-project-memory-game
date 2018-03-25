@@ -2,6 +2,8 @@
  * Create a list that holds all of your cards
  */
 
+const icons = ["fa-anchor","fa-anchor", "fa-paper-plane-o","fa-paper-plane-o", "fa-diamond","fa-diamond", "fa-cube","fa-cube", "fa-leaf","fa-leaf", "fa-bomb", "fa-bomb", "fa-bicycle", "fa-bicycle", "fa-bolt", "fa-bolt"]
+
 //reset board game
 function generateCardTable(icons) {
 	//shuffle icons array
@@ -22,19 +24,61 @@ function generateCardTable(icons) {
 const restart = document.getElementById('button');
 
 restart.addEventListener('click', function() {
+	
 	//reset board game
 	generateCardTable(icons);
+	
 	//reset timer
-
+	clearInterval(timer);
+	document.getElementById('timer').innerHTML = '00:00';
+	sec = 1;	
+	
 	//reset star rating
 
 	//reset move counter
+	resetCounter();
 });
+
+//reset move counter
+const counter = document.getElementById("counter");
+
+function resetCounter(){
+	count = 0
+	counter.textContent = count;
+}
+
+//timer
+let sec = 1;
+let timer;
+
+function timerStarts(){
+    timer = setInterval(function(){
+    	
+    	if (sec.toString().length == 1){
+    		document.getElementById('timer').innerHTML='00:'+ '0' + Number(sec);
+    	}
+    	
+    	if (sec.toString().length !== 1){
+    		document.getElementById('timer').innerHTML='00:' + Number(sec) ;
+    	}
+        
+        sec += 1;
+
+        //stops when all cards are matched
+        if ($(".card.match").length === 16) {
+            clearInterval(timer);
+        }
+
+    }, 1000);
+}
+
+//calulate stars
+
+
 
 
 function initialiseGameBoard() {
-	const icons = ["fa-anchor","fa-anchor", "fa-paper-plane-o","fa-paper-plane-o", "fa-diamond","fa-diamond", "fa-cube","fa-cube", "fa-leaf","fa-leaf", "fa-bomb", "fa-bomb", "fa-bicycle", "fa-bicycle", "fa-bolt", "fa-bolt"]
-
+	
 	const cards = generateCardTable(icons)
 	initialiseClickActions()
 }
@@ -74,7 +118,7 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
-let counter = 0;
+let count = 0;
 
 function initialiseClickActions() {
 	const deck = document.getElementById('game-board');
@@ -85,33 +129,37 @@ function initialiseClickActions() {
 			const currentCard = evt.target;
 			let flag = true;
 			var notCurrentCard;
+
+			//timer starts
+			if (document.getElementById('timer').innerHTML =='00:00'){
+				timerStarts();
+			}
+
 		   
 			//checks if the currentCard is open
 			if (currentCard.classList.contains('open', 'show')){
 				   
-			   //increase move counter
-				counter = counter + 1;
-				document.getElementById("counter").textContent = counter;
+			   //increase move count
+				count = count + 1;
+				counter.textContent = count;
 				//close card
 				currentCard.classList.remove('open','show');
 				
+
 				flag = false;
-				console.log (currentCard)
+				// console.log (currentCard)
 			}; 
 			
 			if (flag === true){
+
 				//open card
 				currentCard.classList.add('open', 'show');  
 
+				//increace count
+				count = count + 1;
+				counter.textContent = count;
 
-				// console.log(currentCard)    
 
-				//increace counter
-				counter = counter + 1;
-				// if (counter === 1){
-				//     document.getElementById("counter").textContent = counter + " Move";
-				// }                
-				document.getElementById("counter").textContent = counter;
 				//calculate stars
 				/*
 				 * code
@@ -123,7 +171,7 @@ function initialiseClickActions() {
 			if($(".card.open.show").length === 2){  
 
 				//checks if first or current card is open
-			   if ( $(".card.open.show")[0] === currentCard ||  $(".card.open.show")[1] === currentCard ){
+				if ( $(".card.open.show")[0] === currentCard ||  $(".card.open.show")[1] === currentCard ){
 
 					//define notCurrentCard
 					if ($(".card.open.show")[0] === currentCard){
@@ -159,13 +207,17 @@ function initialiseClickActions() {
 
 					// console.log(notCurrentCard)
 				}
+
 			} 
+
+			// // if all cards are matched
+			// if ($(".card.match").length === 16){
+			// 	//timer stops
+			// 	timerStops()
+			// }
 
 		}
 
 	});
 }
-
-
-
 
