@@ -20,6 +20,7 @@ function generateCardTable(icons) {
 	return uiCards
 }
 
+
 //restart button
 const restart = document.getElementById('button');
 
@@ -27,13 +28,19 @@ restart.addEventListener('click', function() {
 	
 	//reset board game
 	generateCardTable(icons);
-	
+
 	//reset timer
 	clearInterval(timer);
+	timer = null
+
+	// timer = 0
+	// console.log('it works!')
 	document.getElementById('timer').innerHTML = '00:00';
-	sec = 1;	
+
 	
 	//reset star rating
+	document.getElementById("No3").style.display = "inline-block";
+	document.getElementById("No2").style.display = "inline-block";
 
 	//reset move counter
 	resetCounter();
@@ -43,56 +50,70 @@ restart.addEventListener('click', function() {
 const counter = document.getElementById("counter");
 
 function resetCounter(){
-	count = 0
-	counter.textContent = count;
+	movecount = 0
+	counter.textContent = movecount;
 }
 
-//timer
-let sec = 1;
-let min = 0;
+//timer BUGS
 let timer;
 
 function timerStarts(){
+
+	// If a user is quick enough, they can restart the game faster than the completion of each setInterval and the timer will be run twice.
+	// We can return early to fix this.
+	
+	if(timer) return;
+
+	let start = Date.now();
     timer = setInterval(function(){
 
-    if (sec >= 0 && sec <= 60) {
+    	let sec = Math.round((Date.now() - start) / 1000) % 60;
+		let min = Math.round((Date.now() - start) / 1000) / 60;
+		min = Math.floor(min)
 
-    	if (sec.toString().length == 1){
-    		document.getElementById('timer').innerHTML='0' + min + ':0' + Number(sec);
+
+    	if (sec.toString().length == 1 && (min.toString().length == 1)){
+    		document.getElementById('timer').innerHTML = '0' + min + ':0' + sec;
     	}
     	
-    	if (sec.toString().length == 2){
-    		document.getElementById('timer').innerHTML='0' + min + ':' + Number(sec) ;
-    	}
+    	if (sec.toString().length == 2 && (min.toString().length == 1)){
 
-       	if (sec%60 == 0) {
-       		min += 1;
-       		sec = 0;
+    		document.getElementById('timer').innerHTML = '0' + min + ':' + sec;
     	}
-        
-        sec += 1;
-    }
+    	if (sec.toString().length == 1 && (min.toString().length == 2) ){
+
+    		document.getElementById('timer').innerHTML = min + ':0' + sec;
+    	}   
+    	
+    	if (sec.toString().length == 2 && (min.toString().length == 2) ){
+
+    		document.getElementById('timer').innerHTML = min + ':' + sec;
+    	}  
+
         //stops when all cards are matched
         if ($(".card.match").length === 16) {
             clearInterval(timer);
         }
 
     }, 1000);
+
 }
 
 //calculate stars NOT WORKING
 function stars(count){
 
-	if (count <= 10) {
-		$('.score-panel .stars li')[2].css("display","none")
+	if (movecount >= 16 && movecount <= 32) {
+		document.getElementById("No3").style.display = "none";
+		// console.log('it works!')
+		// $('.score-panel .stars li')[2].css("display","none")
 
-	} else if (count <= 20) {
-		$('.score-panel .stars li')[1].css("display","none")
+	} 
+	if (movecount >= 33 && movecount <= 48) {
+		document.getElementById("No3").style.display = "none";
+		document.getElementById("No2").style.display = "none";
+		// $('.score-panel .stars li')[1].css("display","none")
 		
-	} else {
-		$('.score-panel .stars li')[0].css("display","none")
-
-	}
+	} 
 }
 
 
@@ -138,7 +159,7 @@ function shuffle(array) {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
-let count = 0;
+let movecount = 0;
 
 function initialiseClickActions() {
 	const deck = document.getElementById('game-board');
@@ -147,7 +168,6 @@ function initialiseClickActions() {
 
 		if(evt.target.tagName === "LI"){
 			const currentCard = evt.target;
-			let flag = true;
 			var notCurrentCard;
 
 			//timer starts
@@ -160,32 +180,30 @@ function initialiseClickActions() {
 			if (currentCard.classList.contains('open', 'show')){
 				   
 			   //increase move count
-				count = count + 1;
-				counter.textContent = count;
+				movecount = movecount + 1;
+				counter.textContent = movecount;
 				//close card
 				currentCard.classList.remove('open','show');
-				
 
-				flag = false;
+				//calculate stars
+				stars(movecount);				
+				
 				// console.log (currentCard)
-			}; 
-			
-			if (flag === true){
+			} else {
 
 				//open card
 				currentCard.classList.add('open', 'show');  
 
 				//increace count
-				count = count + 1;
-				counter.textContent = count;
-
+				movecount = movecount + 1;
+				counter.textContent = movecount;
 
 				//calculate stars
-				// stars(count);
+				stars(movecount);
 			}
 
 			//checks if there is 2nd card
-			if($(".card.open.show").length === 2){  
+			if($(".card.open.show").length === 2){
 
 				//checks if first or current card is open
 				if ( $(".card.open.show")[0] === currentCard ||  $(".card.open.show")[1] === currentCard ){
@@ -199,13 +217,13 @@ function initialiseClickActions() {
 					}
 					
 					// check if notCurrentCard is open and not
-					if(notCurrentCard /*&& !(notCurrentCard.classList.contains('match'))*/) {    	
+					if(notCurrentCard ) {    	
 
 						// have cards the same icon? (matched)
 						if (notCurrentCard.querySelector("i").className === currentCard.querySelector("i").className) {
-							notCurrentCard.classList.remove('open','show')
+							// notCurrentCard.classList.remove('open','show')
 							notCurrentCard.classList.add('match')
-							currentCard.classList.remove('open','show')
+							// currentCard.classList.remove('open','show')
 							currentCard.classList.add('match')
 						}
 
@@ -219,7 +237,7 @@ function initialiseClickActions() {
 						setTimeout(function () {
 							notCurrentCard.classList.remove('notmatch','open','show')
 							currentCard.classList.remove('notmatch','open','show') 
-						}, 1000);
+						}, 500);
 					}
 
 					// console.log(notCurrentCard)
@@ -234,6 +252,8 @@ function initialiseClickActions() {
 			// }
 
 		}
+
+		return movecount;
 
 	});
 }
