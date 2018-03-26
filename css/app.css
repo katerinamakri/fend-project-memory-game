@@ -94,7 +94,7 @@ h1 {
 .score-panel {
     display: flex;
     width: 345px;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     justify-content: space-between;
 }
 
@@ -121,3 +121,33 @@ h1 {
 /*.score-panel #timer {
     display: inline-block;
 }*/
+
+/*MODAL*/
+#overlay {
+     visibility: hidden;
+     position: absolute;
+/*     left: 0px;
+     top: 0px;*/
+     width:100%;
+     height:100%;
+     text-align:center;
+/*     z-index: 1000;*/
+}
+
+/*style inner div*/
+#overlay div {
+     /*width:300px;*/
+    margin: 280px auto;
+    background-color: #fff;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+#overlay button {
+    cursor: pointer;
+    width: 140px;
+    height: 40px;
+    border-radius: 5px;
+} 

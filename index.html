@@ -26,13 +26,13 @@
                 <span id="counter" class="moves">0</span> Moves
             </p>
 
-            <button id="button" class="restart">
-        		<i class="fa fa-repeat"></i>
-        	</button>
-
             <p>
                 <span id="timer">00:00</span>
-            </p>
+            </p>            
+
+            <button id="restartbutton" class="restart">
+        		<i class="fa fa-repeat"></i>
+        	</button>
 
         </section>
 
@@ -86,6 +86,16 @@
                 <i class="fa fa-cube"></i>
             </li>
         </ul>
+
+        <div id="overlay">
+            <div>
+                <h2>Congratulations!!!</h2>
+                <h3>You won</h3>
+                <p>Your time was and you won Stars</p>
+                <button id="replaybutton">Play again!</button>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

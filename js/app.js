@@ -22,9 +22,11 @@ function generateCardTable(icons) {
 
 
 //restart button
-const restart = document.getElementById('button');
+const restart = document.getElementById('restartbutton');
 
-restart.addEventListener('click', function() {
+restart.addEventListener('click', startAgain);
+
+function startAgain() {
 	
 	//reset board game
 	generateCardTable(icons);
@@ -33,7 +35,6 @@ restart.addEventListener('click', function() {
 	clearInterval(timer);
 	timer = null
 
-	// timer = 0
 	// console.log('it works!')
 	document.getElementById('timer').innerHTML = '00:00';
 
@@ -44,6 +45,18 @@ restart.addEventListener('click', function() {
 
 	//reset move counter
 	resetCounter();
+}
+
+//replay button
+const replay = document.getElementById('replaybutton');
+
+replay.addEventListener('click', function() {
+	
+	// close modal
+	overlay();
+
+	startAgain()
+
 });
 
 //reset move counter
@@ -54,8 +67,10 @@ function resetCounter(){
 	counter.textContent = movecount;
 }
 
-//timer BUGS
+//timer
 let timer;
+let sec;
+let min;
 
 function timerStarts(){
 
@@ -67,8 +82,8 @@ function timerStarts(){
 	let start = Date.now();
     timer = setInterval(function(){
 
-    	let sec = Math.round((Date.now() - start) / 1000) % 60;
-		let min = Math.round((Date.now() - start) / 1000) / 60;
+    	sec = Math.round((Date.now() - start) / 1000) % 60;
+		min = Math.round((Date.now() - start) / 1000) / 60;
 		min = Math.floor(min)
 
 
@@ -88,8 +103,9 @@ function timerStarts(){
     	if (sec.toString().length == 2 && (min.toString().length == 2) ){
 
     		document.getElementById('timer').innerHTML = min + ':' + sec;
-    	}  
+    	} 
 
+    	var result = "";
         //stops when all cards are matched
         if ($(".card.match").length === 16) {
             clearInterval(timer);
@@ -99,25 +115,31 @@ function timerStarts(){
 
 }
 
-//calculate stars NOT WORKING
-function stars(count){
+//calculate stars
+let starsNum;
 
-	if (movecount >= 16 && movecount <= 32) {
+function stars(movecount){
+
+	if (movecount < 20){
+		starsNum = 3
+	}
+
+	if (movecount >= 20 && movecount < 38) {
 		document.getElementById("No3").style.display = "none";
+		starsNum = 2
 		// console.log('it works!')
 		// $('.score-panel .stars li')[2].css("display","none")
 
 	} 
-	if (movecount >= 33 && movecount <= 48) {
+	if (movecount >= 38) {
 		document.getElementById("No3").style.display = "none";
 		document.getElementById("No2").style.display = "none";
+		starsNum = 1
 		// $('.score-panel .stars li')[1].css("display","none")
-		
 	} 
 }
 
-
-
+//starting the game
 function initialiseGameBoard() {
 	
 	const cards = generateCardTable(icons)
@@ -125,6 +147,23 @@ function initialiseGameBoard() {
 }
 
 initialiseGameBoard()
+
+//function for modal
+function overlay() {
+	const modal = document.getElementById("overlay");
+
+
+	if (modal.style.visibility == "visible") {		
+		
+		modal.style.visibility = "hidden";
+		//enable restart button
+		restart.addEventListener('click', startAgain);
+	} else {
+		modal.style.visibility = "visible";
+		//disable restart button
+		restart.removeEventListener('click', startAgain);
+	}
+}
 
 /*
  * Display the cards on the page
@@ -175,20 +214,19 @@ function initialiseClickActions() {
 				timerStarts();
 			}
 
-		   
 			//checks if the currentCard is open
 			if (currentCard.classList.contains('open', 'show')){
 				   
-			   //increase move count
+				//increase move count
 				movecount = movecount + 1;
 				counter.textContent = movecount;
+				
 				//close card
 				currentCard.classList.remove('open','show');
 
 				//calculate stars
 				stars(movecount);				
 				
-				// console.log (currentCard)
 			} else {
 
 				//open card
@@ -245,11 +283,27 @@ function initialiseClickActions() {
 
 			} 
 
-			// // if all cards are matched
-			// if ($(".card.match").length === 16){
-			// 	//timer stops
-			// 	timerStops()
-			// }
+			// if all cards are matched
+			if ($(".card.match").length === 16){
+				if (starsNum == 3){
+					document.getElementById('overlay').querySelector("h3").innerHTML = "Excellent"
+					document.getElementById('overlay').querySelector("p").innerHTML = "Your time was " + min + ":" + sec +" and you won " + starsNum + " Stars"
+					
+				
+				} else if (starsNum == 2){
+					document.getElementById('overlay').querySelector("h3").innerHTML = "Well done"
+					document.getElementById('overlay').querySelector("p").innerHTML = "Your time was " + min + ":" + sec +" and you won " + starsNum + " Stars"
+				
+				} else if (starsNum == 1){
+				
+					document.getElementById('overlay').querySelector("h3").innerHTML = "Nice try"
+					document.getElementById('overlay').querySelector("p").innerHTML = "Your time was " + min + ":" + sec +" and you won " + starsNum + " Star"
+					document.getElementById('overlay').querySelector("button").innerHTML = "Try again"
+
+				}
+				
+				overlay()
+			}
 
 		}
 
