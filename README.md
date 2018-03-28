@@ -18,7 +18,8 @@ Each turn:
 
 ## Future Improvements
 
+- [ ] Fix known bug
 - [ ] Add CSS animations when cards are clicked
-- [ ] Implement a leaderboard
 - [ ] Pause the game
 - [ ] Level of difficulty by increasing the number of cards
+- [ ] Implement a leaderboard
