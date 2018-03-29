@@ -16,7 +16,7 @@ Each turn:
 * If the cards do not match, both cards are flipped face down.
 * The game ends once all cards have been correctly matched.
 
-![Matching_game_Preview](/img/Matching_game_Preview.png)
+![Matching_game_Preview](https://raw.githubusercontent.com/katerinamakri/fend-project-memory-game/master/img/Matching_game_Preview.PNG)
 
 ## Future Improvements
 
